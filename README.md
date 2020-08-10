@@ -30,7 +30,7 @@ Usage
 Demo
 ----
 
-https://demo.isnew.info/pico/markdown-yalinker
+https://demo.isnew.info/pico/pico-yalinker
 
 Credits
 -------
