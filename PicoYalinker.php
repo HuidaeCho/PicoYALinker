@@ -20,14 +20,14 @@ class PicoYalinker extends AbstractPicoPlugin {
         // https://example.com/pico => /pico
         $root_url = preg_replace('/^[^\/]*\/\/[^\/]*(\/.*?)\/*$/', '\1', $config['base_url']);
         // https://example.com/pico/current-page => /current-page
-        $page_url = $pico->getRequestUrl();
+        $current_route = '/'.$pico->getRequestUrl();
         // Current Page Title
-        $page_title = $pico->getFileMeta()['title'];
+        $current_title = $pico->getFileMeta()['title'];
 
         $utf8_slugs = $config['yalinker_utf8_slugs'];
 
         $className = ($this->config['content_config']['extra'] ? 'ParsedownExtra' : 'Parsedown').'Yalinker';
-        $parsedown = new $className($utf8_slugs, $root_url, $page_url, $page_title);
+        $parsedown = new $className($utf8_slugs, $root_url, $current_route, $current_title);
         $parsedown->setBreaksEnabled((bool) $config['content_config']['breaks']);
         $parsedown->setMarkupEscaped((bool) $config['content_config']['escape']);
         $parsedown->setUrlsLinked((bool) $config['content_config']['auto_urls']);
@@ -38,22 +38,22 @@ class ParsedownYalinker extends Parsedown
 {
     protected $utf8_slugs;
     protected $root_url;
-    protected $page_url;
-    protected $page_title;
+    protected $current_route;
+    protected $current_title;
 
-    public function __construct($utf8_slugs, $root_url, $page_url, $page_title)
+    public function __construct($utf8_slugs, $root_url, $current_route, $current_title)
     {
         $this->utf8_slugs = $utf8_slugs;
         $this->root_url = $root_url;
-        $this->page_url = $page_url;
-        $this->page_title = $page_title;
+        $this->current_route = $current_route;
+        $this->current_title = $current_title;
     }
 
     protected function inlineLink($excerpt)
     {
         $link = parent::inlineLink($excerpt);
         if ($link === null)
-            $link = yalink($excerpt, $this->utf8_slugs, $this->root_url, $this->page_url, $this->page_title);
+            $link = yalink($excerpt, $this->utf8_slugs, $this->root_url, $this->current_route, $this->current_title);
         return $link;
     }
 }
@@ -62,27 +62,27 @@ class ParsedownExtraYalinker extends ParsedownExtra
 {
     protected $utf8_slugs;
     protected $root_url;
-    protected $page_url;
-    protected $page_title;
+    protected $current_route;
+    protected $current_title;
 
-    public function __construct($utf8_slugs, $root_url, $page_url, $page_title)
+    public function __construct($utf8_slugs, $root_url, $current_route, $current_title)
     {
         $this->utf8_slugs = $utf8_slugs;
         $this->root_url = $root_url;
-        $this->page_url = $page_url;
-        $this->page_title = $page_title;
+        $this->current_route = $current_route;
+        $this->current_title = $current_title;
     }
 
     protected function inlineLink($excerpt)
     {
         $link = parent::inlineLink($excerpt);
         if ($link === null)
-            $link = yalink($excerpt, $this->utf8_slugs, $this->root_url, $this->page_url, $this->page_title);
+            $link = yalink($excerpt, $this->utf8_slugs, $this->root_url, $this->current_route, $this->current_title);
         return $link;
     }
 }
 
-function yalink($excerpt, $utf8_slugs, $root_url, $page_url, $page_title)
+function yalink($excerpt, $utf8_slugs, $root_url, $current_route, $current_title)
 {
     // syntax: [[(link)?(|(text)?)?]]
     // * [[]] => <a href="/current">Current Title</a>
@@ -143,7 +143,7 @@ function yalink($excerpt, $utf8_slugs, $root_url, $page_url, $page_title)
                 // ./a => a
                 $href = substr($href, 2);
 
-            $path_prefix = $page_route;
+            $path_prefix = $current_route;
             if (preg_match('/^([\/.]*)\/(.*)$/', $href, $matches)) {
                 if (strlen($matches[1]) && $matches[1][0] != '/')
                     // relative path
@@ -157,7 +157,7 @@ function yalink($excerpt, $utf8_slugs, $root_url, $page_url, $page_title)
             switch ($href) {
             case '':
                 if (!$has_text)
-                    $text = $show_path ? $path_prefix : $page_title;
+                    $text = $show_path ? $path_prefix : $current_title;
                 break;
             case '.':
                 $href = '';
