@@ -6,7 +6,7 @@ This Pico plugin adds the ability to create links with less typing in Markdown.
 Install
 -------
 
-1. Clone this Github repo into your `plugins/PicoYalinker` directory.
+1. Clone this Github repo into your `plugins/PicoYALinker` directory.
 2. If you want to include UTF-8 characters in slugs, add the following line to `config/config.yml`:
    ```
    yalinker_utf8_slugs: true

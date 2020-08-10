@@ -3,12 +3,12 @@
  * Pico Yet Another Linker Plugin
  *
  * @author Huidae Cho
- * @link https://github.com/HuidaeCho/pico-yalinker
+ * @link https://github.com/HuidaeCho/PicoYALinker
  * @license http://opensource.org/licenses/MIT
  * @version 0.1.0
  */
 
-class PicoYalinker extends AbstractPicoPlugin {
+class PicoYALinker extends AbstractPicoPlugin {
 
     const API_VERSION = 3;
 
@@ -26,7 +26,7 @@ class PicoYalinker extends AbstractPicoPlugin {
 
         $utf8_slugs = $config['yalinker_utf8_slugs'];
 
-        $className = ($this->config['content_config']['extra'] ? 'ParsedownExtra' : 'Parsedown').'Yalinker';
+        $className = ($this->config['content_config']['extra'] ? 'ParsedownExtra' : 'Parsedown').'YALinker';
         $parsedown = new $className($utf8_slugs, $root_url, $current_route, $current_title);
         $parsedown->setBreaksEnabled((bool) $config['content_config']['breaks']);
         $parsedown->setMarkupEscaped((bool) $config['content_config']['escape']);
@@ -34,7 +34,7 @@ class PicoYalinker extends AbstractPicoPlugin {
     }
 }
 
-class ParsedownYalinker extends Parsedown
+class ParsedownYALinker extends Parsedown
 {
     protected $utf8_slugs;
     protected $root_url;
@@ -58,7 +58,7 @@ class ParsedownYalinker extends Parsedown
     }
 }
 
-class ParsedownExtraYalinker extends ParsedownExtra
+class ParsedownExtraYALinker extends ParsedownExtra
 {
     protected $utf8_slugs;
     protected $root_url;
